@@ -252,6 +252,48 @@ input:focus, select:focus, textarea:focus {
   background: #d82828;
 }
 
+/* Dark Mode Button Overrides */
+html.dark .btn-primary {
+  background: #0066cc;
+  color: white;
+  border-color: #0066cc;
+}
+
+html.dark .btn-primary:hover {
+  background: #0052a3;
+  border-color: #0052a3;
+}
+
+html.dark .btn-secondary {
+  background: transparent;
+  border: 2px solid #0066cc;
+  color: #0066cc;
+}
+
+html.dark .btn-secondary:hover {
+  background: rgba(0, 102, 204, 0.2);
+  border-color: #0052a3;
+  color: #0088ff;
+}
+
+html.dark .btn-success {
+  background: #10b981;
+  color: white;
+}
+
+html.dark .btn-success:hover {
+  background: #0d8659;
+}
+
+html.dark .btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+html.dark .btn-danger:hover {
+  background: #d82828;
+}
+
 /* --- Badge --- */
 .badge {
   padding: 6px 12px;

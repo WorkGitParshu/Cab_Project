@@ -9,9 +9,10 @@
   width: 100%;
   max-width: 380px;
   padding: 32px 28px 24px 28px;
-  background: rgba(255, 255, 255, 0.97);
-  border-radius: 18px;
-  box-shadow: 0 10px 32px rgba(102, 126, 234, 0.14), 0 1.5px 8px rgba(0,0,0,0.08);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   text-align: left;
 }
 
@@ -20,14 +21,14 @@
   margin-bottom: 22px;
   font-size: 1.6rem;
   font-weight: 700;
-  color: #667eea;
+  color: var(--text-primary);
   letter-spacing: 0.02em;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 7px;
-  color: #333;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 500;
 }
@@ -35,33 +36,107 @@
 .form-group input {
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid #e1e5e9;
-  border-radius: 11px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
   font-size: 1rem;
-  transition: border 0.25s;
-  background: #f5f8ff;
+  transition: all 0.2s ease;
+  background: #ffffff;
+  color: #1a1a1a;
   margin-bottom: 12px;
 }
 
-.form-group input:focus {
-  border-color: #667eea;
-  outline: none;
+.form-group input::placeholder {
+  color: #999999;
 }
 
-.btn-primary {
+.form-group input:hover {
+  border-color: #0066cc;
+  background: #ffffff;
+}
+
+.form-group input:focus {
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+  outline: none;
+  background: #ffffff;
+}
+
+.cab-login-card .btn-primary {
   margin-top: 8px;
   width: 100%;
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #0066cc;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cab-login-card .btn-primary:hover {
+  background: #0052a3;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.cab-login-card .btn-primary:active {
+  transform: scale(0.98);
 }
 
 .error-message {
   margin-top: 15px;
   background: #fee;
-  color: #c33;
+  color: #ef4444;
   padding: 12px 8px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid #fcc;
   text-align: center;
   font-weight: 500;
   font-size: 0.98rem;
+}
+
+/* Dark Mode Support */
+html.dark .cab-login-card {
+  background: var(--bg-primary);
+  border-color: var(--border-color);
+}
+
+html.dark .form-group input {
+  background: #2a2a2a;
+  color: #ffffff;
+  border-color: #444444;
+}
+
+html.dark .form-group input::placeholder {
+  color: #999999;
+}
+
+html.dark .form-group input:hover {
+  border-color: #0066cc;
+  background: #333333;
+}
+
+html.dark .form-group input:focus {
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.25);
+  background: #333333;
+}
+
+html.dark .cab-login-card .btn-primary {
+  background: #0066cc;
+  color: white;
+}
+
+html.dark .cab-login-card .btn-primary:hover {
+  background: #0052a3;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 @media (max-width: 500px) {
