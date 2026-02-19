@@ -23,6 +23,7 @@ const MultiStepDestinationInput = ({
   const [selectedDestination, setSelectedDestination] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [searchTimeout, setSearchTimeout] = useState(null);
 
   // Haversine distance calculation
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -52,24 +53,6 @@ const MultiStepDestinationInput = ({
     });
     setStep(2);
   };
-
-  // ... (keeping other code) ...
-
-  // Render part
-  {/* Use Current Location Button */ }
-  <button
-    className="location-btn current"
-    onClick={handleUseCurrentLocation}
-    disabled={!userLocation}
-  >
-    <span className="btn-icon">📍</span>
-    <div>
-      <div className="btn-title">Use Current Location</div>
-      <div className="btn-subtitle">
-        {userLocation ? `${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}` : "Fetching location..."}
-      </div>
-    </div>
-  </button>
 
   // Helper: Geocode fallback (Local -> OSM)
   const fetchGeocode = async (query) => {
@@ -107,68 +90,98 @@ const MultiStepDestinationInput = ({
     return [];
   };
 
-  // Step 1: Search for pickup location
+  // Step 1: Search for pickup location with debounce
   const handlePickupSearch = async (input) => {
     setPickupInput(input);
     setError("");
 
+    // Clear previous timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
     if (input.length === 0) {
       setPickupSuggestions([]);
       return;
     }
 
-    setLoading(true);
-    try {
-      const results = await fetchGeocode(input);
-      setPickupSuggestions(
-        results.slice(0, 5).map((result) => ({
-          name: result.display_name,
-          lat: parseFloat(result.lat),
-          lng: parseFloat(result.lon),
-        }))
-      );
-      setLoading(false);
-    } catch (err) {
-      console.error("Error searching location:", err);
-      setError("Could not fetch location suggestions");
-      setPickupSuggestions([]);
-      setLoading(false);
-    }
+    // Debounce search - only search after user stops typing for 500ms
+    const timeout = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const results = await fetchGeocode(input);
+        setPickupSuggestions(
+          results.slice(0, 5).map((result) => ({
+            name: result.display_name,
+            lat: parseFloat(result.lat),
+            lng: parseFloat(result.lon),
+          }))
+        );
+        setLoading(false);
+      } catch (err) {
+        console.error("Error searching location:", err);
+        setError("Could not fetch location suggestions");
+        setPickupSuggestions([]);
+        setLoading(false);
+      }
+    }, 500); // Wait 500ms after user stops typing
+
+    setSearchTimeout(timeout);
   };
 
-  // Step 3: Search for destination
+  // Confirm pickup location selection
+  const handleConfirmPickup = (suggestion) => {
+    setSelectedPickup({
+      lat: suggestion.lat,
+      lng: suggestion.lng,
+      description: suggestion.name,
+    });
+    setStep(2);
+  };
+
+  // Step 3: Search for destination with debounce
   const handleDestinationSearch = async (input) => {
     setDestinationInput(input);
     setError("");
 
+    // Clear previous timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
     if (input.length === 0) {
       setDestinationSuggestions([]);
       return;
     }
 
-    setLoading(true);
-    try {
-      const results = await fetchGeocode(input);
-      setDestinationSuggestions(
-        results.slice(0, 5).map((result) => ({
-          name: result.display_name,
-          lat: parseFloat(result.lat),
-          lng: parseFloat(result.lon),
-          distance: calculateDistance(
-            selectedPickup.lat,
-            selectedPickup.lng,
-            parseFloat(result.lat),
-            parseFloat(result.lon)
-          ),
-        }))
-      );
-      setLoading(false);
-    } catch (err) {
-      console.error("Error searching destination:", err);
-      setError("Could not fetch destination suggestions");
-      setDestinationSuggestions([]);
-      setLoading(false);
-    }
+    // Debounce search - only search after user stops typing for 500ms
+    const timeout = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const results = await fetchGeocode(input);
+        setDestinationSuggestions(
+          results.slice(0, 5).map((result) => ({
+            name: result.display_name,
+            lat: parseFloat(result.lat),
+            lng: parseFloat(result.lon),
+            distance: calculateDistance(
+              selectedPickup.lat,
+              selectedPickup.lng,
+              parseFloat(result.lat),
+              parseFloat(result.lon)
+            ),
+          }))
+        );
+        setLoading(false);
+      } catch (err) {
+        console.error("Error searching destination:", err);
+        setError("Could not fetch destination suggestions");
+        setDestinationSuggestions([]);
+        setLoading(false);
+      }
+    }, 500); // Wait 500ms after user stops typing
+
+    setSearchTimeout(timeout);
   };
 
   // Step 4: Confirm destination and complete

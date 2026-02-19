@@ -66,10 +66,6 @@ const Navigation = ({
                     <button className="btn-text-logout" onClick={handleLogout}>Logout</button>
                   </div>
                 </div>
-                <button className="nav-item" onClick={handleSwitchRole} style={{ borderTop: '1px solid var(--border-light)', marginTop: '0.5rem' }}>
-                  <span className="nav-icon">🔄</span>
-                  <span className="nav-label">Switch Role</span>
-                </button>
               </>
             ) : (
               <div className="auth-widget">
@@ -105,10 +101,6 @@ const Navigation = ({
                     <button className="btn-text-logout" onClick={handleCabLogout}>Logout</button>
                   </div>
                 </div>
-                <button className="nav-item" onClick={handleSwitchRole} style={{ borderTop: '1px solid var(--border-light)', marginTop: '0.5rem' }}>
-                  <span className="nav-icon">🔄</span>
-                  <span className="nav-label">Switch Role</span>
-                </button>
               </>
             ) : (
               <div className="auth-widget">
