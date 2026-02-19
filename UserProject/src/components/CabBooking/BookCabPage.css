@@ -1,33 +1,64 @@
 .book-cab-page {
     display: flex;
     height: calc(100vh - 70px);
-    /* Full height minus header if present, or just 100vh */
     overflow: hidden;
     position: relative;
+    background: var(--bg-secondary);
 }
 
 .booking-sidebar {
-    width: 450px;
-    /* Fixed width for controls */
+    width: 420px;
     height: 100%;
     overflow-y: auto;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-    background: var(--bg-glass);
+    border-right: 1px solid var(--border-color);
+    background: var(--bg-primary);
     padding: 0;
     z-index: 10;
     display: flex;
     flex-direction: column;
+    box-shadow: var(--shadow-md);
 }
 
 .booking-map-container {
     flex: 1;
     height: 100%;
     position: relative;
-    background: #1a1a2e;
-    /* Fallback */
+    background: #f0f0f0;
+}
+
+/* Booking Sidebar Content */
+.booking-sidebar-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.booking-header {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.booking-header h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.booking-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 /* Mobile Responsive */
+@media (max-width: 1024px) {
+    .booking-sidebar {
+        width: 380px;
+    }
+}
+
 @media (max-width: 768px) {
     .book-cab-page {
         flex-direction: column;
@@ -40,9 +71,8 @@
         height: auto;
         min-height: 50vh;
         border-right: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid var(--border-color);
         order: 2;
-        /* Controls below map on mobile? Or above? */
     }
 
     .booking-map-container {

@@ -1,47 +1,50 @@
 .quick-access-container {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-secondary);
+  min-height: calc(100vh - 100px);
+  padding: 2rem;
 }
 
 .quick-access-card {
   max-width: 1200px;
   margin: 0 auto;
-  background: white;
-  border-radius: 16px;
-  padding: 40px 30px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
 }
 
 .quick-access-card h1 {
   text-align: center;
-  color: #333;
-  font-size: 32px;
-  margin: 0 0 10px 0;
+  color: var(--text-primary);
+  font-size: 2rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 800;
+  font-family: var(--font-heading);
 }
 
 .quick-access-card > p {
   text-align: center;
-  color: #999;
-  font-size: 14px;
-  margin: 0 0 40px 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0 0 2rem 0;
 }
 
 /* Access Grid */
 .access-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .access-section h2 {
-  color: #333;
-  font-size: 18px;
-  margin: 0 0 20px 0;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #667eea;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--accent);
+  font-weight: 600;
 }
 
 /* Access Buttons */
@@ -49,9 +52,9 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 18px;
-  margin-bottom: 15px;
-  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
   text-decoration: none;
@@ -61,22 +64,25 @@
 
 .access-button:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .booking-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary);
   color: white;
+  font-weight: 600;
 }
 
 .tracking-btn {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
+  background: var(--accent);
+  color: var(--primary);
+  font-weight: 600;
 }
 
 .bookings-btn {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: var(--success);
   color: white;
+  font-weight: 600;
 }
 
 .driver-btn {

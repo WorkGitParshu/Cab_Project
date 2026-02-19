@@ -2,60 +2,63 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  min-height: calc(100vh - 100px);
+  background: var(--bg-secondary);
+  padding: 2rem;
 }
 
 .payment-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
   width: 100%;
-  max-width: 800px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 700px;
+  border: 1px solid var(--border-color);
 }
 
 .payment-header {
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
   text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .payment-header h2 {
-  color: #333;
-  margin-bottom: 25px;
-  font-size: 2.5rem;
-  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
 }
 
 .booking-summary {
-  background: #f8f9fa;
-  border-radius: 15px;
-  padding: 25px;
-  border: 2px solid #e1e5e9;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  border: 1px solid var(--border-light);
+  margin-bottom: 1.5rem;
 }
 
 .booking-summary h3 {
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
   font-weight: 600;
 }
 
 .summary-details {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 0.75rem;
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #e1e5e9;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .summary-row:last-child {
@@ -63,20 +66,20 @@
 }
 
 .summary-row span:first-child {
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .summary-row span:last-child {
-  color: #333;
+  color: var(--text-primary);
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .summary-row.total span:last-child {
-  color: #28a745;
-  font-size: 1.2rem;
+  color: var(--accent);
+  font-size: 1.25rem;
   font-weight: 700;
 }
 
