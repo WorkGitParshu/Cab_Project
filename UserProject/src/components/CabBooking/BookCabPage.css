@@ -1,0 +1,53 @@
+.book-cab-page {
+    display: flex;
+    height: calc(100vh - 70px);
+    /* Full height minus header if present, or just 100vh */
+    overflow: hidden;
+    position: relative;
+}
+
+.booking-sidebar {
+    width: 450px;
+    /* Fixed width for controls */
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-glass);
+    padding: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+}
+
+.booking-map-container {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    background: #1a1a2e;
+    /* Fallback */
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .book-cab-page {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .booking-sidebar {
+        width: 100%;
+        height: auto;
+        min-height: 50vh;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        order: 2;
+        /* Controls below map on mobile? Or above? */
+    }
+
+    .booking-map-container {
+        height: 40vh;
+        width: 100%;
+        order: 1;
+    }
+}

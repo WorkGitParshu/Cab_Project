@@ -1,0 +1,103 @@
+.notification-toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 380px;
+}
+
+.notification-toast {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideIn 0.3s ease-out;
+    border-left: 5px solid #3498db;
+}
+
+/* Success notifications (green) */
+.notification-toast.success {
+    background: #27ae60;
+    border-left-color: #2ecc71;
+}
+
+/* Error notifications (red) */
+.notification-toast.error {
+    background: #c0392b;
+    border-left-color: #e74c3c;
+}
+
+/* Info notifications (blue) */
+.notification-toast.info {
+    background: #2980b9;
+    border-left-color: #3498db;
+}
+
+/* Default notifications (dark) */
+.notification-toast.default {
+    background: #34495e;
+    border-left-color: #95a5a6;
+}
+
+.notif-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.notif-content {
+    flex: 1;
+}
+
+.notif-title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.notif-type {
+    font-size: 11px;
+    opacity: 0.8;
+    font-style: italic;
+    margin-bottom: 2px;
+}
+
+.notif-time {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.notif-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+    padding: 0 5px;
+}
+
+.notif-close:hover {
+    opacity: 1;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

@@ -1,0 +1,479 @@
+/* Driver History Component Styles */
+.driver-history-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 24px;
+  color: white;
+  max-height: 600px;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.driver-history-container.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Header Section */
+.history-header {
+  margin-bottom: 24px;
+}
+
+.history-header h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.stat-card.highlight {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Tab Navigation */
+.history-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tab-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn.active {
+  opacity: 1;
+  border-bottom-color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+}
+
+/* Ride History Section */
+.ride-history-section h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.rides-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ride-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.ride-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+}
+
+.ride-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.ride-date {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.ride-rating {
+  text-align: right;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.star {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 16px;
+  transition: color 0.2s ease;
+}
+
+.star.filled {
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+.rating-value {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Location Info */
+.ride-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.location-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.location-item {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.location-icon {
+  font-size: 20px;
+  margin-top: 2px;
+}
+
+.location-label {
+  font-size: 11px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.location-text {
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.location-arrow {
+  font-size: 18px;
+  opacity: 0.6;
+  margin: 0 4px;
+}
+
+/* Trip Metrics */
+.trip-metrics {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.metric-icon {
+  font-size: 16px;
+}
+
+.metric-label {
+  opacity: 0.8;
+}
+
+.metric-value {
+  font-weight: 600;
+  color: #ffd700;
+}
+
+/* User Feedback */
+.user-feedback {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 3px solid #ffd700;
+}
+
+.feedback-label {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-bottom: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.feedback-text {
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.no-rides {
+  text-align: center;
+  padding: 32px 16px;
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+/* Statistics Section */
+.statistics-section h3 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  font-size: 32px;
+  min-width: 50px;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-name {
+  font-size: 12px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+
+.stat-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+/* Insights Section */
+.insights-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.insights-section h4 {
+  font-size: 14px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.insight {
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.insight.positive {
+  background: rgba(76, 175, 80, 0.2);
+  border-left-color: #4caf50;
+}
+
+/* Error Message */
+.error-message {
+  background: rgba(244, 67, 54, 0.2);
+  border: 1px solid rgba(244, 67, 54, 0.5);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+/* Scrollbar Styling */
+.driver-history-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.driver-history-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.driver-history-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.5);
+  border-radius: 10px;
+}
+
+.driver-history-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.7);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .driver-history-container {
+    padding: 16px;
+  }
+
+  .stats-overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .location-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .location-arrow {
+    display: none;
+  }
+
+  .stat-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .history-header h2 {
+    font-size: 20px;
+  }
+
+  .ride-card {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .driver-history-container {
+    padding: 12px;
+    max-height: 500px;
+  }
+
+  .stats-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trip-metrics {
+    flex-direction: column;
+  }
+
+  .metric {
+    width: 100%;
+  }
+
+  .history-tabs {
+    gap: 8px;
+  }
+
+  .tab-btn {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}

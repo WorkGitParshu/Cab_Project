@@ -1,0 +1,463 @@
+/* WaitingForDriverUI.css - Enhanced 15-second waiting experience */
+
+.waiting-ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Animated gradient background */
+.gradient-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+  opacity: 0.95;
+  z-index: -1;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.2) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.2) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.8) 0px, transparent 80%);
+}
+
+/* Main waiting card */
+.waiting-card {
+  background: var(--card-bg);
+  border-radius: 32px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+  padding: 48px 32px;
+  max-width: 460px;
+  width: 90%;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Waiting status section */
+.waiting-status {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.pulse-icon {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-ring {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+  animation: pulse 2s ease-out infinite;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+}
+
+.pulse-ring.pulse-1 {
+  animation: pulse 2s ease-out 0s infinite;
+}
+
+.pulse-ring.pulse-2 {
+  animation: pulse 2s ease-out 0.5s infinite;
+}
+
+.pulse-ring.pulse-3 {
+  animation: pulse 2s ease-out 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.pulse-center {
+  position: relative;
+  z-index: 1;
+  font-size: 40px;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.4));
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.waiting-status h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.waiting-status .status-text {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Driver details card */
+.driver-details-card {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.driver-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.driver-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 8px 16px rgba(56, 189, 248, 0.25);
+  font-size: 28px;
+  color: white;
+}
+
+.driver-info-section {
+  flex: 1;
+}
+
+.driver-name {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.driver-phone {
+  margin: 4px 0 0 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.driver-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.rating-stars {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--warning);
+}
+
+.rides-count {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* Trip details */
+.trip-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.detail-row.highlight {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.detail-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.detail-row.highlight .detail-label {
+  color: #86efac;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.detail-row.highlight .detail-value {
+  color: var(--success);
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.detail-value.fare {
+  font-size: 1.1rem;
+}
+
+/* Timer section */
+.waiting-timer-section {
+  text-align: center;
+}
+
+.timer-display {
+  margin-bottom: 24px;
+}
+
+.timer-value {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 8px;
+  animation: pulse-number 1s ease-in-out infinite;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+}
+
+@keyframes pulse-number {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.timer-label {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.timer-progress {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.timer-bar {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: 2px;
+  transition: width 1s linear;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+}
+
+/* Loading dots animation */
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+  height: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  animation: bounce 1.4s infinite;
+}
+
+.dot-1 {
+  animation-delay: 0s;
+}
+
+.dot-2 {
+  animation-delay: 0.2s;
+}
+
+.dot-3 {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  40% {
+    transform: scale(1.4);
+    opacity: 1;
+    background: var(--primary);
+  }
+}
+
+/* Cancel button */
+.cancel-waiting-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 16px;
+}
+
+.cancel-waiting-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.2);
+}
+
+/* Location summary */
+.location-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.location-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.location-icon {
+  font-size: 18px;
+  color: var(--primary);
+}
+
+.location-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.location-coords {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.8;
+}
+
+.location-arrow {
+  color: var(--text-tertiary);
+  font-size: 16px;
+  opacity: 0.5;
+}
+
+/* Info text at bottom */
+.info-text {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 24px;
+  position: relative;
+  z-index: 10;
+  max-width: 400px;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .waiting-card {
+    padding: 32px 24px;
+    max-width: 95vw;
+  }
+
+  .timer-value {
+    font-size: 2.5rem;
+  }
+
+  .driver-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .driver-rating {
+    align-items: center;
+  }
+}

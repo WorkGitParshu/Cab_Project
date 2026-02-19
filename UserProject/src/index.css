@@ -1,0 +1,184 @@
+:root {
+  /* Brand Colors - Cyber/Neon Theme */
+  --primary: #00f2ff; /* Cyan Neon */
+  --primary-glow: rgba(0, 242, 255, 0.4);
+  --secondary: #7000ff; /* Deep Purple Neon */
+  --secondary-glow: rgba(112, 0, 255, 0.4);
+  --accent: #ff0055; /* Hot Pink */
+  
+  /* Backgrounds */
+  --bg-dark: #030712; /* Rich Black */
+  --bg-glass: rgba(17, 25, 40, 0.75);
+  --bg-card: rgba(30, 41, 59, 0.4);
+  
+  /* Text */
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --text-highlight: #e2e8f0;
+
+  /* Borders & Effects */
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  --glass-highlight: 1px solid rgba(255, 255, 255, 0.05);
+
+  /* Spacing & Layout */
+  --sidebar-width: 280px;
+  --header-height: 70px; /* Mobile header */
+
+  /* Typography */
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  overflow-x: hidden;
+  /* Deep Space Gradient Background */
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(112, 0, 255, 0.15), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(0, 242, 255, 0.1), transparent 25%);
+  background-attachment: fixed;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* --- Glassmorphism Utilities --- */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--glass-border);
+  border-radius: 16px;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Typography Utilities --- */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+h1 { font-size: 2.5rem; line-height: 1.2; }
+h2 { font-size: 2rem; line-height: 1.3; }
+h3 { font-size: 1.5rem; }
+
+p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* --- Layout Utilities --- */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-col { display: flex; flex-direction: column; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+/* --- Input Styles --- */
+input, select, textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: var(--text-main);
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 242, 255, 0.1);
+  background: rgba(15, 23, 42, 0.8);
+}
+
+/* --- Button Styles --- */
+.btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, #00a8ff 100%);
+  color: #000; /* Dark text on bright neon for contrast */
+  box-shadow: 0 4px 15px rgba(0, 242, 255, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 242, 255, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-main);
+}
+
+/* --- Badge --- */
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-primary {
+  background: rgba(0, 242, 255, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(0, 242, 255, 0.2);
+}
+
