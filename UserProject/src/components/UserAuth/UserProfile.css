@@ -86,9 +86,14 @@
 }
 
 .edit-profile-btn:first-of-type {
-  background: linear-gradient(135deg, var(--primary) 0%, #00a8ff 100%);
-  color: #000;
+  background: #0066cc;
+  color: white;
   border: none;
+}
+
+html.dark .edit-profile-btn:first-of-type {
+  background: #0066cc;
+  color: white;
 }
 
 .edit-profile-btn:hover {

@@ -22,6 +22,8 @@ import UserRideTracking from './components/CabBooking/UserRideTracking';
 import DriverDashboardSimple from './components/CabDriver/DriverDashboardSimple';
 import QuickAccess from './components/QuickAccess/QuickAccess';
 import NotificationToast from './components/Notifications/NotificationToast';
+import ProtectedPage from './Routing/ProtectedPage';
+import DriverProtected from './Routing/DriverProtected';
 
 function App() {
   const [userRole, setUserRole] = useState(null); // 'passenger' or 'driver'
@@ -32,6 +34,7 @@ function App() {
   const [pickupLocation, setPickupLocation] = useState(null);
   const [dropLocation, setDropLocation] = useState(null);
   const [driverData, setDriverData] = useState(null);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
 
   useEffect(() => {
@@ -39,10 +42,6 @@ function App() {
     const savedRole = localStorage.getItem('userRole');
     if (savedRole) {
       setUserRole(savedRole);
-    } else {
-      // default to null to show RoleSelection
-      // setUserRole('passenger');
-      // localStorage.setItem('userRole', 'passenger');
     }
 
     // Check if user is logged in on app load
@@ -52,6 +51,16 @@ function App() {
         setUser(JSON.parse(savedUser));
       } catch (err) {
         localStorage.removeItem('user');
+      }
+    }
+
+    // Check if cab (driver) is logged in on app load
+    const savedCab = localStorage.getItem('cab');
+    if (savedCab) {
+      try {
+        setCab(JSON.parse(savedCab));
+      } catch (err) {
+        localStorage.removeItem('cab');
       }
     }
 
@@ -71,11 +80,13 @@ function App() {
 
   const handleLogin = (userData) => {
     setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
     setCurrentPage('home');
   };
 
   const handleRegister = (userData) => {
     setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
     setCurrentPage('home');
   };
 
@@ -103,13 +114,50 @@ function App() {
     setCab(null);
     setUserRole(null);
     localStorage.removeItem('userRole');
+    localStorage.removeItem('cab');
     setCurrentPage('home');
   };
+
+  const handleSwitchRole = () => {
+    setUserRole(null);
+    setUser(null);
+    setCab(null);
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('user');
+    localStorage.removeItem('cab');
+    setCurrentPage('home');
+  };
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'home':
         if (userRole === 'driver') {
+          if (!cab) {
+            return <CabLogin onLogin={(cabData) => { 
+              setCab(cabData);
+              localStorage.setItem('cab', JSON.stringify(cabData));
+              setCurrentPage('driver-dashboard'); 
+            }} />;
+          }
           return <DriverDashboardSimple cab={cab} onLogout={handleCabLogout} />;
         }
         return <Home user={user} onPageChange={handlePageChange} />;
@@ -122,51 +170,77 @@ function App() {
       // case 'book':
       //   return <CabBooking user={user} />;
       case 'book':
-        return <BookCabPage
-          user={user}
-          pickupLocation={pickupLocation}
-          dropLocation={dropLocation}
-          setPickupLocation={setPickupLocation}
-          setDropLocation={setDropLocation}
-          setCurrentPage={setCurrentPage}
-        />;
+        return <ProtectedPage user={user} onNavigate={setCurrentPage}>
+          <BookCabPage
+            user={user}
+            pickupLocation={pickupLocation}
+            dropLocation={dropLocation}
+            setPickupLocation={setPickupLocation}
+            setDropLocation={setDropLocation}
+            setCurrentPage={setCurrentPage}
+          />
+        </ProtectedPage>;
       case 'profile':
-        return <UserProfile user={user} />;
+        return <ProtectedPage user={user} onNavigate={setCurrentPage}>
+          <UserProfile user={user} />
+        </ProtectedPage>;
 
       case 'user-ride':
-        return <UserRidePage
-          user={user}
-          pickupLocation={pickupLocation}
-          dropLocation={dropLocation}
-          setCurrentPage={setCurrentPage}
-          setSelectedBooking={setSelectedBooking}
-        />;
+        return <ProtectedPage user={user} onNavigate={setCurrentPage}>
+          <UserRidePage
+            user={user}
+            pickupLocation={pickupLocation}
+            dropLocation={dropLocation}
+            setCurrentPage={setCurrentPage}
+            setSelectedBooking={setSelectedBooking}
+          />
+        </ProtectedPage>;
       case 'bookings':
-        return <MyBookings user={user} />;
+        return <ProtectedPage user={user} onNavigate={setCurrentPage}>
+          <MyBookings user={user} />
+        </ProtectedPage>;
       case 'payment':
-        return <Payment booking={selectedBooking} onPaymentComplete={handlePaymentComplete} />;
+        return <ProtectedPage user={user} onNavigate={setCurrentPage}>
+          <Payment booking={selectedBooking} onPaymentComplete={handlePaymentComplete} />
+        </ProtectedPage>;
       case 'cab-register':
-        return <CabRegister onRegister={(cabData) => { setCab(cabData); setCurrentPage('driver-dashboard'); }} />;
+        return <CabRegister onRegister={(cabData) => { 
+          setCab(cabData);
+          localStorage.setItem('cab', JSON.stringify(cabData));
+          setCurrentPage('driver-dashboard'); 
+        }} />;
       case 'cab-login':
-        return <CabLogin onLogin={(cabData) => { setCab(cabData); setCurrentPage('driver-dashboard'); }} />;
+        return <CabLogin onLogin={(cabData) => { 
+          setCab(cabData);
+          localStorage.setItem('cab', JSON.stringify(cabData));
+          setCurrentPage('driver-dashboard'); 
+        }} />;
       case 'cab-dashboard':
-        return <DriverDashboardSimple cab={cab} onLogout={handleCabLogout} />;
+        return <DriverProtected cab={cab} onNavigate={setCurrentPage}>
+          <DriverDashboardSimple cab={cab} onLogout={handleCabLogout} />
+        </DriverProtected>;
       case 'booking-flow':
-        return <BookingFlow
-          user={user}
-          setCurrentPage={setCurrentPage}
-          setSelectedBooking={setSelectedBooking}
-        />;
+        return <ProtectedPage user={user} onNavigate={setCurrentPage}>
+          <BookingFlow
+            user={user}
+            setCurrentPage={setCurrentPage}
+            setSelectedBooking={setSelectedBooking}
+          />
+        </ProtectedPage>;
       case 'ride-tracking':
-        return <UserRideTracking
-          onCancel={() => setCurrentPage('home')}
-          onRideCompleted={(booking) => {
-            setSelectedBooking(booking);
-            setCurrentPage('payment');
-          }}
-        />;
+        return <ProtectedPage user={user} onNavigate={setCurrentPage}>
+          <UserRideTracking
+            onCancel={() => setCurrentPage('home')}
+            onRideCompleted={(booking) => {
+              setSelectedBooking(booking);
+              setCurrentPage('payment');
+            }}
+          />
+        </ProtectedPage>;
       case 'driver-dashboard':
-        return <DriverDashboardSimple cab={cab} onLogout={handleCabLogout} />;
+        return <DriverProtected cab={cab} onNavigate={setCurrentPage}>
+          <DriverDashboardSimple cab={cab} onLogout={handleCabLogout} />
+        </DriverProtected>;
       default:
         return <QuickAccess onPageChange={handlePageChange} />;
     }
@@ -188,8 +262,11 @@ function App() {
       cab={cab}
       onLogout={handleLogout}
       onCabLogout={handleCabLogout}
+      onSwitchRole={handleSwitchRole}
       currentPage={currentPage}
       onPageChange={handlePageChange}
+      theme={theme}
+      onToggleTheme={toggleTheme}
     >
       {renderCurrentPage()}
       <NotificationToast />

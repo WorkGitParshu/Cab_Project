@@ -26,7 +26,7 @@ const Home = ({ user, onPageChange }) => {
       {/* Header Section */}
       <header className="dashboard-header">
         <div className="header-greeting">
-          <h1>{greeting()}, <span className="text-primary">{user ? user.firstName : 'Traveler'}</span></h1>
+          <h1>{greeting()}, <span style={{color: 'var(--accent)'}}>{user ? user.firstName : 'Traveler'}</span></h1>
           <p>Where would you like to go today?</p>
         </div>
         {user &&

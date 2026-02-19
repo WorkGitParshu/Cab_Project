@@ -7,10 +7,13 @@ const Navigation = ({
   cab,
   onLogout,
   onCabLogout,
+  onSwitchRole,
   currentPage,
   onPageChange,
   isOpen,
-  setIsOpen
+  setIsOpen,
+  theme,
+  onToggleTheme
 }) => {
 
   const handleLogout = () => {
@@ -20,6 +23,10 @@ const Navigation = ({
 
   const handleCabLogout = () => {
     if (onCabLogout) onCabLogout();
+  };
+
+  const handleSwitchRole = () => {
+    if (onSwitchRole) onSwitchRole();
   };
 
   const NavItem = ({ page, icon, label, onClick }) => (
@@ -51,18 +58,24 @@ const Navigation = ({
 
           <div className="nav-section mt-auto">
             {user ? (
-              <div className="user-profile-widget">
-                <div className="user-avatar">{user.firstName[0]}</div>
-                <div className="user-details">
-                  <span className="user-name">{user.firstName}</span>
-                  <button className="btn-text-logout" onClick={handleLogout}>Logout</button>
+              <>
+                <div className="user-profile-widget">
+                  <div className="user-avatar">{user.firstName[0]}</div>
+                  <div className="user-details">
+                    <span className="user-name">{user.firstName}</span>
+                    <button className="btn-text-logout" onClick={handleLogout}>Logout</button>
+                  </div>
                 </div>
-              </div>
+                <button className="nav-item" onClick={handleSwitchRole} style={{ borderTop: '1px solid var(--border-light)', marginTop: '0.5rem' }}>
+                  <span className="nav-icon">🔄</span>
+                  <span className="nav-label">Switch Role</span>
+                </button>
+              </>
             ) : (
               <div className="auth-widget">
                 <NavItem page="login" icon="🔐" label="Sign In" />
                 <NavItem page="register" icon="✨" label="Sign Up" />
-                <button className="nav-item" onClick={handleLogout} style={{ marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <button className="nav-item" onClick={handleSwitchRole} style={{ borderTop: '1px solid var(--border-light)', marginTop: '0.5rem' }}>
                   <span className="nav-icon">🔄</span>
                   <span className="nav-label">Switch Role</span>
                 </button>
@@ -84,17 +97,27 @@ const Navigation = ({
 
           <div className="nav-section mt-auto">
             {cab ? (
-              <div className="user-profile-widget">
-                <div className="user-avatar driver">D</div>
-                <div className="user-details">
-                  <span className="user-name">{cab.driverName}</span>
-                  <button className="btn-text-logout" onClick={handleCabLogout}>Logout</button>
+              <>
+                <div className="user-profile-widget">
+                  <div className="user-avatar driver">D</div>
+                  <div className="user-details">
+                    <span className="user-name">{cab.driverName}</span>
+                    <button className="btn-text-logout" onClick={handleCabLogout}>Logout</button>
+                  </div>
                 </div>
-              </div>
+                <button className="nav-item" onClick={handleSwitchRole} style={{ borderTop: '1px solid var(--border-light)', marginTop: '0.5rem' }}>
+                  <span className="nav-icon">🔄</span>
+                  <span className="nav-label">Switch Role</span>
+                </button>
+              </>
             ) : (
               <div className="auth-widget">
                 <NavItem page="cab-login" icon="🔑" label="Login" />
                 <NavItem page="cab-register" icon="📝" label="Register" />
+                <button className="nav-item" onClick={handleSwitchRole} style={{ borderTop: '1px solid var(--border-light)', marginTop: '0.5rem' }}>
+                  <span className="nav-icon">🔄</span>
+                  <span className="nav-label">Switch Role</span>
+                </button>
               </div>
             )}
           </div>
@@ -112,6 +135,13 @@ const Navigation = ({
             <span className="logo-icon">🚕</span>
             <span className="logo-text">Cab<span className="text-primary">Book</span></span>
           </div>
+          <button 
+            className="theme-toggle-btn" 
+            onClick={onToggleTheme}
+            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
         </div>
 
         <div className="sidebar-content">

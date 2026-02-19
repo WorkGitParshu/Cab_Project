@@ -103,9 +103,9 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--primary);
+  background: #0066cc;
   animation: pulse 1.5s ease-in-out infinite;
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 15px rgba(0, 102, 204, 0.5);
 }
 
 .pulse-delay-1 {
