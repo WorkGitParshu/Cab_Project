@@ -51,6 +51,7 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
     if (savedEarnings) setEarnings(parseInt(savedEarnings));
     if (savedCompletedRides) setCompletedRides(parseInt(savedCompletedRides));
     if (savedRating) setRating(parseFloat(savedRating));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 📍 Geolocation Tracking: Send updates to backend every 10s
@@ -81,7 +82,8 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
     updateLocation();
 
     // Periodic updates
-    const interval = setInterval(updateLocation, 10000);
+    const locationInterval = setInterval(updateLocation, 10000);
+    return () => clearInterval(locationInterval);
   }, [cab, driverStatus]);
 
   // Handle pending requests - only fetch once when coming online
@@ -125,7 +127,7 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
     return () => {
       isMounted = false;
     };
-  }, [cab?.id, driverStatus, acceptedRide ? 1 : 0]); // Only run when status changes
+  }, [cab?.id, driverStatus, acceptedRide]);
 
   // Handle new ride requests from WebSocket
   useEffect(() => {
@@ -137,26 +139,24 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
 
     const newRequest = {
       id: rideRequest.bookingId,
-        passengerName: 'User ' + rideRequest.userId,
-        passengerRating: '4.8', // Placeholder
-        pickupLocation: rideRequest.pickupAddress || `Lat: ${rideRequest.pickupLat}`,
-        dropLocation: rideRequest.dropAddress || `Lat: ${rideRequest.dropLat}`,
-        fare: rideRequest.fare || 0,
-        distance: rideRequest.distance || 0,
-        receivedTime: new Date(),
-        timeLeft: 120
-      };
+      passengerName: 'User ' + rideRequest.userId,
+      passengerRating: '4.8',
+      pickupLocation: rideRequest.pickupAddress || `Lat: ${rideRequest.pickupLat}`,
+      dropLocation: rideRequest.dropAddress || `Lat: ${rideRequest.dropLat}`,
+      fare: rideRequest.fare || 0,
+      distance: rideRequest.distance || 0,
+      receivedTime: new Date(),
+      timeLeft: 120
+    };
 
-      setIncomingRequests([newRequest]);
+    setIncomingRequests([newRequest]);
 
-      // Auto-reject (clear UI) after 120 seconds
-      // Note: Backend will also handle timeout
-      const rejectTimer = setTimeout(() => {
-        setIncomingRequests(prev => prev.filter(r => r.id !== newRequest.id));
-      }, 120000);
+    // Auto-reject (clear UI) after 120 seconds
+    const rejectTimer = setTimeout(() => {
+      setIncomingRequests(prev => prev.filter(r => r.id !== newRequest.id));
+    }, 120000);
 
-      return () => clearTimeout(rejectTimer);
-    }
+    return () => clearTimeout(rejectTimer);
   }, [rideRequest, driverStatus, acceptedRide]);
 
   // Countdown timer for incoming requests
