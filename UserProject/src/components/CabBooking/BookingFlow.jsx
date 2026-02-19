@@ -20,6 +20,8 @@ const BookingFlow = ({
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [availableDrivers, setAvailableDrivers] = useState([]);
   const [estimatedFare, setEstimatedFare] = useState(0);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [confirmCountdown, setConfirmCountdown] = useState(0);
 
   // WebSocket integration
   const { rideConfirmation } = useRideWebSocket(user?.id);
@@ -117,8 +119,17 @@ const BookingFlow = ({
   }, [selectedCabType, selectedLocations]);
 
   const handleConfirmBooking = async () => {
+    // Prevent multiple requests
+    if (isConfirming || confirmCountdown > 0) {
+      return;
+    }
+
     try {
       if (!selectedLocations || !selectedCabType || !selectedDriver) return;
+
+      // Set confirming state and start 30-second lockout
+      setIsConfirming(true);
+      setConfirmCountdown(30);
 
       const bookingRequest = {
         userId: user?.id || 1,
@@ -167,9 +178,23 @@ const BookingFlow = ({
       }
       setBookingStep(5);
 
+      // Start countdown timer
+      const countdownInterval = setInterval(() => {
+        setConfirmCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(countdownInterval);
+            setIsConfirming(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
     } catch (e) {
       console.error("Booking Error:", e);
       alert("Failed to create booking: " + e.message);
+      setIsConfirming(false);
+      setConfirmCountdown(0);
     }
   };
 
@@ -265,8 +290,24 @@ const BookingFlow = ({
             </div>
 
             <div className="action-buttons mt-4">
-              <button className="btn btn-secondary w-full" onClick={() => setBookingStep(3)}>Back</button>
-              <button className="btn btn-primary w-full" onClick={handleConfirmBooking}>Confirm & Request</button>
+              <button className="btn btn-secondary w-full" onClick={() => setBookingStep(3)} disabled={isConfirming}>Back</button>
+              <button 
+                className="btn btn-primary w-full" 
+                onClick={handleConfirmBooking}
+                disabled={isConfirming || confirmCountdown > 0}
+                style={{
+                  opacity: (isConfirming || confirmCountdown > 0) ? 0.6 : 1,
+                  cursor: (isConfirming || confirmCountdown > 0) ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {isConfirming ? (
+                  <>✓ Request Sent! ({confirmCountdown}s)</>
+                ) : confirmCountdown > 0 ? (
+                  <>Please wait... ({confirmCountdown}s)</>
+                ) : (
+                  <>Confirm & Request</>
+                )}
+              </button>
             </div>
           </div>
         )}

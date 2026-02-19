@@ -24,6 +24,8 @@ const MultiStepDestinationInput = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
+  const [confirmDisabled, setConfirmDisabled] = useState(false);
+  const [confirmCountdown, setConfirmCountdown] = useState(0);
 
   // Haversine distance calculation
   const calculateDistance = (lat1, lon1, lat2, lon2) => {

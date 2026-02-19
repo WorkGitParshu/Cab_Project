@@ -82,47 +82,61 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
 
     // Periodic updates
     const interval = setInterval(updateLocation, 10000);
-    return () => clearInterval(interval);
   }, [cab, driverStatus]);
 
-  // Listen for Real Ride Requests
+  // Handle pending requests - only fetch once when coming online
   useEffect(() => {
-    // Check for pending requests on mount/reconnect
-    if (cab?.id && driverStatus === 'online' && !acceptedRide) {
-      fetch(`http://localhost:8077/api/bookings/dispatch/pending/driver/${cab.id}`)
-        .then(res => {
-          if (res.ok && res.status !== 204) return res.json();
-          return null;
-        })
-        .then(data => {
-          if (data) {
-            console.log("📥 Found pending request on load:", data);
-            const newRequest = {
-              id: data.bookingId,
-              passengerName: 'User ' + data.userId,
-              passengerRating: '4.8',
-              pickupLocation: data.pickupAddress || `Lat: ${data.pickupLat}`,
-              dropLocation: data.dropAddress || `Lat: ${data.dropLat}`,
-              fare: data.fare || 0,
-              distance: data.distance || 0,
-              receivedTime: new Date(),
-              timeLeft: 120 // Reset timer or calc remaining if timestamp sent
-            };
-            // Avoid duplicates
-            setIncomingRequests(prev => {
-              if (prev.find(r => r.id === newRequest.id)) return prev;
-              return [...prev, newRequest];
-            });
-          }
-        })
-        .catch(err => console.error("Error checking pending requests:", err));
+    if (!cab?.id || driverStatus !== 'online' || acceptedRide) {
+      return;
     }
 
-    if (rideRequest && driverStatus === 'online' && !acceptedRide) {
-      console.log("New Ride Request in Dashboard:", rideRequest);
+    // Only fetch pending requests once per online session
+    let isMounted = true;
+    
+    fetch(`http://localhost:8077/api/bookings/dispatch/pending/driver/${cab.id}`)
+      .then(res => {
+        if (res.ok && res.status !== 204) return res.json();
+        return null;
+      })
+      .then(data => {
+        if (!isMounted) return;
+        
+        if (data) {
+          console.log("📥 Found pending request on load:", data);
+          const newRequest = {
+            id: data.bookingId,
+            passengerName: 'User ' + data.userId,
+            passengerRating: '4.8',
+            pickupLocation: data.pickupAddress || `Lat: ${data.pickupLat}`,
+            dropLocation: data.dropAddress || `Lat: ${data.dropLat}`,
+            fare: data.fare || 0,
+            distance: data.distance || 0,
+            receivedTime: new Date(),
+            timeLeft: 120
+          };
+          setIncomingRequests(prev => {
+            if (prev.find(r => r.id === newRequest.id)) return prev;
+            return [...prev, newRequest];
+          });
+        }
+      })
+      .catch(err => console.error("Error checking pending requests:", err));
 
-      const newRequest = {
-        id: rideRequest.bookingId,
+    return () => {
+      isMounted = false;
+    };
+  }, [cab?.id, driverStatus, acceptedRide ? 1 : 0]); // Only run when status changes
+
+  // Handle new ride requests from WebSocket
+  useEffect(() => {
+    if (!rideRequest || driverStatus !== 'online' || acceptedRide) {
+      return;
+    }
+
+    console.log("New Ride Request in Dashboard:", rideRequest);
+
+    const newRequest = {
+      id: rideRequest.bookingId,
         passengerName: 'User ' + rideRequest.userId,
         passengerRating: '4.8', // Placeholder
         pickupLocation: rideRequest.pickupAddress || `Lat: ${rideRequest.pickupLat}`,
