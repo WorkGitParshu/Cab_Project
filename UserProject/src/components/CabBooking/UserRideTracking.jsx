@@ -14,7 +14,7 @@ const UserRideTracking = ({ onCancel, onRideCompleted }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationData, setNotificationData] = useState(null);
 
-  // Initialize active ride and poll for status
+  // Initialize active ride and poll for status - OPTIMIZED FOR SPEED
   useEffect(() => {
     const savedRide = localStorage.getItem('currentUserRide') || localStorage.getItem('activeRide');
     let rideData = null;
@@ -23,7 +23,8 @@ const UserRideTracking = ({ onCancel, onRideCompleted }) => {
       setActiveRide(rideData);
     }
 
-    const interval = setInterval(async () => {
+    // Check immediately on mount for faster response
+    const checkRideStatus = async () => {
       if (!rideData && !activeRide) return;
       const currentRideId = rideData?.id || activeRide?.id;
       if (!currentRideId) return;
@@ -34,36 +35,37 @@ const UserRideTracking = ({ onCancel, onRideCompleted }) => {
           const booking = await response.json();
 
           if (booking.status === 'CONFIRMED' || booking.status === 'IN_PROGRESS') {
-            setDriverAccepted(true);
-            const driverInfo = {
-              name: booking.driverName || 'Driver',
-              cabNumber: booking.cabNumber || 'Unknown',
-              rating: 4.8,
-              totalRides: 120,
-              cabType: booking.cabType || 'SEDAN',
-              model: booking.model || 'Comfort',
-              currentLocation: {
-                lat: 14.6053,
-                lng: 73.2903
-              }
-            };
-            setDriverDetails(driverInfo);
+            if (!driverAccepted) {
+              setDriverAccepted(true);
+              const driverInfo = {
+                name: booking.driverName || 'Driver',
+                cabNumber: booking.cabNumber || 'Unknown',
+                rating: 4.8,
+                totalRides: 120,
+                cabType: booking.cabType || 'SEDAN',
+                model: booking.model || 'Comfort',
+                currentLocation: {
+                  lat: 14.6053,
+                  lng: 73.2903
+                }
+              };
+              setDriverDetails(driverInfo);
 
-            // Show acceptance notification
-            if (!showNotification) {
-              setNotificationData({
-                type: 'accepted',
-                title: 'Driver Accepted Your Ride! 🎉',
-                message: `${driverInfo.name} is on the way to pick you up!`,
-                driver: driverInfo
-              });
-              setShowNotification(true);
+              // Show acceptance notification
+              if (!showNotification) {
+                setNotificationData({
+                  type: 'accepted',
+                  title: 'Driver Accepted Your Ride! 🎉',
+                  message: `${driverInfo.name} is on the way to pick you up!`,
+                  driver: driverInfo
+                });
+                setShowNotification(true);
+              }
             }
           }
 
           if (booking.status === 'COMPLETED') {
             console.log("🏁 Ride completed! Moving to payment.");
-            clearInterval(interval);
             localStorage.removeItem('currentUserRide');
             localStorage.removeItem('activeRide');
             localStorage.removeItem('driverAcceptedRide');
@@ -77,12 +79,19 @@ const UserRideTracking = ({ onCancel, onRideCompleted }) => {
       } catch (err) {
         console.error("Polling error:", err);
       }
+    };
 
+    // Check immediately
+    checkRideStatus();
+
+    // Then check every 1 second (reduced from 3 seconds for faster updates)
+    const interval = setInterval(() => {
+      checkRideStatus();
       setWaitingTime(prev => prev + 1);
-    }, 3000);
+    }, 1000);
 
     return () => clearInterval(interval);
-  }, [onRideCompleted, showNotification, activeRide]);
+  }, [onRideCompleted, showNotification, activeRide, driverAccepted]);
 
   const handleCancelRide = () => {
     localStorage.removeItem('currentUserRide');
