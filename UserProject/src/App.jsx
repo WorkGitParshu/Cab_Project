@@ -34,6 +34,7 @@ function App() {
   const [pickupLocation, setPickupLocation] = useState(null);
   const [dropLocation, setDropLocation] = useState(null);
   const [driverData, setDriverData] = useState(null);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
 
   useEffect(() => {
@@ -117,10 +118,46 @@ function App() {
     setCurrentPage('home');
   };
 
+  const handleSwitchRole = () => {
+    setUserRole(null);
+    setUser(null);
+    setCab(null);
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('user');
+    localStorage.removeItem('cab');
+    setCurrentPage('home');
+  };
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'home':
         if (userRole === 'driver') {
+          if (!cab) {
+            return <CabLogin onLogin={(cabData) => { 
+              setCab(cabData);
+              localStorage.setItem('cab', JSON.stringify(cabData));
+              setCurrentPage('driver-dashboard'); 
+            }} />;
+          }
           return <DriverDashboardSimple cab={cab} onLogout={handleCabLogout} />;
         }
         return <Home user={user} onPageChange={handlePageChange} />;
@@ -225,8 +262,11 @@ function App() {
       cab={cab}
       onLogout={handleLogout}
       onCabLogout={handleCabLogout}
+      onSwitchRole={handleSwitchRole}
       currentPage={currentPage}
       onPageChange={handlePageChange}
+      theme={theme}
+      onToggleTheme={toggleTheme}
     >
       {renderCurrentPage()}
       <NotificationToast />

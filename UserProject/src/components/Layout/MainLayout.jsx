@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navigation from '../Navigation/Navigation';
 import './MainLayout.css';
 
-const MainLayout = ({ children, userRole, user, cab, onLogout, onCabLogout, currentPage, onPageChange }) => {
+const MainLayout = ({ children, userRole, user, cab, onLogout, onCabLogout, onSwitchRole, currentPage, onPageChange, theme, onToggleTheme }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -14,10 +14,13 @@ const MainLayout = ({ children, userRole, user, cab, onLogout, onCabLogout, curr
         cab={cab}
         onLogout={onLogout}
         onCabLogout={onCabLogout}
+        onSwitchRole={onSwitchRole}
         currentPage={currentPage}
         onPageChange={onPageChange}
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
+        theme={theme}
+        onToggleTheme={onToggleTheme}
       />
 
       {/* Main Content Area */}
