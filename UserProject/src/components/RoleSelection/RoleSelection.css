@@ -94,7 +94,7 @@
 }
 
 .role-btn {
-  background: var(--primary);
+  background: #0066cc;
   color: white;
   border: none;
   padding: 14px 32px;
@@ -111,11 +111,21 @@
 .role-btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-  background: var(--primary-dark);
+  background: #0052a3;
 }
 
 .role-btn:active {
   transform: translateY(0);
+}
+
+/* Dark mode */
+html.dark .role-btn {
+  background: #0066cc;
+  color: white;
+}
+
+html.dark .role-btn:hover {
+  background: #0052a3;
 }
 
 @media (max-width: 768px) {

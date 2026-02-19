@@ -68,7 +68,7 @@
 }
 
 .booking-btn {
-  background: var(--primary);
+  background: #0066cc;
   color: white;
   font-weight: 600;
 }
@@ -83,6 +83,11 @@
   background: var(--success);
   color: white;
   font-weight: 600;
+}
+
+html.dark .booking-btn {
+  background: #0066cc;
+  color: white;
 }
 
 .driver-btn {

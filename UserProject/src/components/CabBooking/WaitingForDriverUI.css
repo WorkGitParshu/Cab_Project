@@ -356,7 +356,7 @@
   40% {
     transform: scale(1.4);
     opacity: 1;
-    background: var(--primary);
+    background: #0066cc;
   }
 }
 

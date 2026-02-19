@@ -207,7 +207,7 @@
 
 .select-btn {
   width: 100%;
-  background: var(--primary);
+  background: #0066cc;
   border: none;
   color: white;
   padding: 11px 16px;
@@ -227,9 +227,19 @@
 }
 
 .select-btn:hover {
-  background: var(--primary-dark);
+  background: #0052a3;
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+/* Dark mode */
+html.dark .select-btn {
+  background: #0066cc;
+  color: white;
+}
+
+html.dark .select-btn:hover {
+  background: #0052a3;
 }
 
 /* Responsive */
