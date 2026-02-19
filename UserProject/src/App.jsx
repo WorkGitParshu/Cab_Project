@@ -33,7 +33,7 @@ function App() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [pickupLocation, setPickupLocation] = useState(null);
   const [dropLocation, setDropLocation] = useState(null);
-  const [driverData, setDriverData] = useState(null);
+  const [_driverData, _setDriverData] = useState(null);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
 
@@ -49,7 +49,7 @@ function App() {
     if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
-      } catch (err) {
+      } catch {
         localStorage.removeItem('user');
       }
     }
@@ -59,7 +59,7 @@ function App() {
     if (savedCab) {
       try {
         setCab(JSON.parse(savedCab));
-      } catch (err) {
+      } catch {
         localStorage.removeItem('cab');
       }
     }
