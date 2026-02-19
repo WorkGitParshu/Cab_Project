@@ -180,27 +180,27 @@
 .form-group textarea {
   width: 100%;
   padding: 14px 16px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.3s ease;
-  background: rgba(15, 23, 42, 0.5);
-  color: var(--text-primary);
+  background: #ffffff;
+  color: #1a1a1a;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--text-tertiary);
+  color: #999999;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
-  background: rgba(15, 23, 42, 0.8);
+  border-color: #0066cc;
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+  background: #ffffff;
 }
 
 .form-group input:disabled,
@@ -336,6 +336,29 @@
   margin-bottom: 24px;
   color: var(--text-primary);
   letter-spacing: -0.02em;
+}
+
+/* Dark Mode Support */
+html.dark .form-group input,
+html.dark .form-group select,
+html.dark .form-group textarea {
+  background: #2a2a2a;
+  color: #ffffff;
+  border-color: #444444;
+}
+
+html.dark .form-group input::placeholder,
+html.dark .form-group textarea::placeholder {
+  color: #999999;
+}
+
+html.dark .form-group input:focus,
+html.dark .form-group select:focus,
+html.dark .form-group textarea:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.2);
+  background: #333333;
 }
 
 /* Responsive Design */

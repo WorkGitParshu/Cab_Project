@@ -115,13 +115,21 @@
   cursor: pointer;
   padding: 0;
   margin-left: 4px;
-  color: var(--accent);
+  color: #0066cc;
   font-size: 0.95rem;
   transition: color 0.2s ease;
 }
 
 .btn-link:hover {
-  color: var(--text-primary);
+  color: #0052a3;
+}
+
+html.dark .btn-link {
+  color: #4da8ff;
+}
+
+html.dark .btn-link:hover {
+  color: #7fbfff;
 }
 
 .auth-footer {
