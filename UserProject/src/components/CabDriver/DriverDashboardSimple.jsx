@@ -13,7 +13,7 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
   const [completedRides, setCompletedRides] = useState(0);
   const [rating, setRating] = useState(0.0);
 
-  console.log("🎨 DriverDashboard Render. Requests:", incomingRequests.length, "Accepted:", acceptedRide ? "Yes" : "No");
+  console.log("🎨 DriverDashboard Render. Cab ID:", cab?.id, "Requests:", incomingRequests.length, "Accepted:", acceptedRide ? "Yes" : "No");
 
   // WebSocket Hook
   const { rideRequest, sendDriverConfirmation, sendMessageToUser, clearRideRequest } = useRideWebSocket(null, cab?.id);
