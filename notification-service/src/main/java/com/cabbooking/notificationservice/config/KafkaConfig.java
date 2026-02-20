@@ -9,4 +9,5 @@ public class KafkaConfig {
     public static final String BOOKING_TOPIC = "booking-events";
     public static final String PAYMENT_TOPIC = "payment-events";
     public static final String CAB_TOPIC = "cab-events";
+    public static final String USER_TOPIC = "user-events";
 }

@@ -5,6 +5,7 @@ import './NotificationToast.css';
 
 const NotificationToast = () => {
     const [notifications, setNotifications] = useState([]);
+    const [seenNotifications, setSeenNotifications] = useState(new Set());
 
     useEffect(() => {
         const url = 'http://localhost:8083/ws-notifications';
@@ -71,11 +72,38 @@ const NotificationToast = () => {
     };
 
     const addNotification = (notif) => {
+        // BLOCK driver.location.updated - only show during active rides
+        if (notif.eventType === 'driver.location.updated') {
+            console.log('⏭️ Blocking location update notification (use map for real-time tracking)');
+            return;
+        }
+
+        // Create a unique key for this notification to prevent duplicates
+        const notifKey = `${notif.eventType}-${notif.message}-${notif.entityId}`;
+        
+        // Skip if we've already shown this notification recently
+        if (seenNotifications.has(notifKey)) {
+            console.log('⏭️ Skipping duplicate notification:', notifKey);
+            return;
+        }
+
         const id = Date.now();
         const style = getNotificationStyle(notif.eventType);
         const icon = getNotificationIcon(notif.eventType);
 
+        // Mark this notification as seen
+        setSeenNotifications(prev => new Set([...prev, notifKey]));
+
         setNotifications(prev => [...prev, { ...notif, id, style, icon }]);
+
+        // Remove from seen set after 10 seconds to allow it to show again if needed
+        setTimeout(() => {
+            setSeenNotifications(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(notifKey);
+                return newSet;
+            });
+        }, 10000);
 
         // Auto-remove after 6 seconds
         setTimeout(() => {

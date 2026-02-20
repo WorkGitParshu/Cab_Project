@@ -24,11 +24,14 @@ public class NotificationEventConsumer {
         System.out.println("📥 KAFKA: Received Booking Event [" + eventType + "]");
 
         switch (eventType) {
-            case "booking.created":
-            case "booking.accepted":
-            case "booking.cancelled":
-            case "ride.completed":
+            // Only notify during active ride phase
+            case "booking.created": // Ride requested
+            case "booking.accepted": // Driver accepted - cab tracing to pickup
+            case "ride.completed": // Ride finished - payment phase starting
                 broadcastService.broadcastNotification(eventType, message, entityId, data);
+                break;
+            case "booking.cancelled":
+                System.out.println("⏭️ Skipping notification - booking cancelled");
                 break;
             default:
                 System.out.println("⚠️ Unknown booking event type: " + eventType);
@@ -47,10 +50,13 @@ public class NotificationEventConsumer {
         System.out.println("📥 KAFKA: Received Payment Event [" + eventType + "]");
 
         switch (eventType) {
-            case "payment.created":
-            case "payment.success":
-            case "payment.failed":
+            case "payment.created": // Entering payment phase
+            case "payment.success": // Payment complete - FINAL NOTIFICATION
                 broadcastService.broadcastNotification(eventType, message, entityId, data);
+                break;
+            case "payment.failed":
+                // Log failure but don't notify user (stops notifications after payment phase)
+                System.out.println("❌ Payment failed - notification suppressed");
                 break;
             default:
                 System.out.println("⚠️ Unknown payment event type: " + eventType);
@@ -62,24 +68,35 @@ public class NotificationEventConsumer {
     @KafkaListener(topics = "cab-events", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeCabEvent(Map<String, Object> event) {
         String eventType = (String) event.get("eventType");
+
+        System.out.println("📥 KAFKA: Received Cab Event [" + eventType + "] - IGNORED (no notifications)");
+        // No cab event notifications are broadcast
+    }
+
+    // ==================== USER EVENTS ====================
+
+    @KafkaListener(topics = "user-events", groupId = "${spring.kafka.consumer.group-id}")
+    public void consumeUserEvent(Map<String, Object> event) {
+        String eventType = (String) event.get("eventType");
         String message = (String) event.get("message");
         Long entityId = getLongValue(event.get("entityId"));
         Object data = event.get("data");
 
-        System.out.println("📥 KAFKA: Received Cab Event [" + eventType + "]");
+        System.out.println("📥 KAFKA: Received User Event [" + eventType + "]");
 
         switch (eventType) {
-            case "driver.location.updated":
-            case "cab.status.updated":
+            case "user.registered": // New user registration
+            case "user.login": // User successfully logged in
                 broadcastService.broadcastNotification(eventType, message, entityId, data);
                 break;
             default:
-                System.out.println("⚠️ Unknown cab event type: " + eventType);
+                System.out.println("⚠️ Unknown user event type: " + eventType);
         }
     }
 
     private Long getLongValue(Object value) {
-        if (value == null) return null;
+        if (value == null)
+            return null;
         if (value instanceof Integer) {
             return ((Integer) value).longValue();
         } else if (value instanceof Long) {

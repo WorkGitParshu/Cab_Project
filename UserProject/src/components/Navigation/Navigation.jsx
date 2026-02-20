@@ -1,5 +1,6 @@
 import React from 'react';
 import './Navigation.css';
+import NotificationBell from '../Notifications/NotificationBell';
 
 const Navigation = ({
   userRole,
@@ -127,13 +128,16 @@ const Navigation = ({
             <span className="logo-icon">🚕</span>
             <span className="logo-text">Cab<span className="text-primary">Book</span></span>
           </div>
-          <button 
-            className="theme-toggle-btn" 
-            onClick={onToggleTheme}
-            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme === 'light' ? '🌙' : '☀️'}
-          </button>
+          <div className="header-actions">
+            <NotificationBell />
+            <button 
+              className="theme-toggle-btn" 
+              onClick={onToggleTheme}
+              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            >
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
+          </div>
         </div>
 
         <div className="sidebar-content">
