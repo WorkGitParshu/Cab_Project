@@ -237,7 +237,7 @@ const MapWithCabs = ({
     <div>
       <div style={{ width: "100%", height: "400px" }}>
         <GoogleMap
-          center={driverLocation || userLocation}
+          center={driverLocation || userLocation || { lat: 20.2961, lng: 85.8245 }}
           zoom={14}
           mapContainerStyle={{ width: "100%", height: "100%" }}
           onClick={handleMapClick}

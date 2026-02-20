@@ -4,6 +4,7 @@ import "./BookingFlow.css";
 import MultiStepDestinationInput from "./MultiStepDestinationInput";
 import CabTypeSelection from "./CabTypeSelection";
 import api from "../../services/api";
+import Toast from "../Common/Toast";
 
 const BookingFlow = ({
   user,
@@ -22,6 +23,11 @@ const BookingFlow = ({
   const [estimatedFare, setEstimatedFare] = useState(0);
   const [isConfirming, setIsConfirming] = useState(false);
   const [confirmCountdown, setConfirmCountdown] = useState(0);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    setToast({ message, type });
+  };
 
   // WebSocket integration
   const { rideConfirmation } = useRideWebSocket(user?.id);
@@ -164,7 +170,13 @@ const BookingFlow = ({
 
       // Store in local storage for persistence
       localStorage.setItem('currentUserRide', JSON.stringify(booking));
-      alert("✅ Booking Confirmed! Waiting for driver...");
+      localStorage.setItem('rideLocations', JSON.stringify({
+        pickup: { lat: bookingRequest.pickupLat, lng: bookingRequest.pickupLng, address: bookingRequest.pickupLocation },
+        drop: { lat: bookingRequest.dropLat, lng: bookingRequest.dropLng, address: bookingRequest.dropLocation }
+      }));
+
+      // ALERTS REMOVED - Using Toast
+      showToast("Booking request sent! Waiting for driver confirmation...", "info");
 
       // Notify parent to switch to tracking page
       if (setSelectedBooking) {
@@ -192,7 +204,8 @@ const BookingFlow = ({
 
     } catch (e) {
       console.error("Booking Error:", e);
-      alert("Failed to create booking: " + e.message);
+      // ALERTS REMOVED
+      showToast("Failed to create booking: " + e.message, "error");
       setIsConfirming(false);
       setConfirmCountdown(0);
     }
@@ -200,6 +213,14 @@ const BookingFlow = ({
 
   return (
     <div className="booking-flow-container">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       {/* Stepper Header */}
       <div className="booking-stepper">
         <div className={`step-dot ${bookingStep >= 1 ? 'active' : ''}`}>1</div>
@@ -291,8 +312,8 @@ const BookingFlow = ({
 
             <div className="action-buttons mt-4">
               <button className="btn btn-secondary w-full" onClick={() => setBookingStep(3)} disabled={isConfirming}>Back</button>
-              <button 
-                className="btn btn-primary w-full" 
+              <button
+                className="btn btn-primary w-full"
                 onClick={handleConfirmBooking}
                 disabled={isConfirming || confirmCountdown > 0}
                 style={{
@@ -314,22 +335,25 @@ const BookingFlow = ({
 
         {bookingStep === 5 && (
           <div className="animate-flip text-center p-4">
-            <div className="pulse-loader"></div>
+            <div className="pulse-loader-container">
+              <div className="pulse-loader"></div>
+            </div>
             <h3>Requesting Ride...</h3>
             <p>Contacting nearby drivers</p>
           </div>
         )}
 
         {bookingStep === 6 && selectedDriver && (
-          <div className="ride-active-panel text-center">
+          <div className="ride-active-panel text-center animate-fade-in">
             <h3>Driver En Route!</h3>
             <div className="driver-avatar-large mx-auto">{selectedDriver.name[0]}</div>
             <h2>{selectedDriver.cabNumber}</h2>
-            <p>{selectedDriver.model || 'Toyota Etios'}</p>
-            <div className="ride-status glass-panel p-3 mt-3">
+            <p className="text-muted">{selectedDriver.model || 'Toyota Etios'}</p>
+            <div className="ride-status-glass">
               <p>Arriving in <strong>{selectedDriver.responseTime}</strong></p>
+              <div className="mt-2 text-sm text-green-400">Your ride is confirmed</div>
             </div>
-            <button className="btn btn-danger w-full mt-4" onClick={() => { setBookingStep(1); alert("Ride Cancelled"); }}>Cancel Ride</button>
+            <button className="btn btn-danger w-full mt-4" onClick={() => { setBookingStep(1); showToast("Ride Cancelled", "info"); }}>Cancel Ride</button>
           </div>
         )}
       </div>

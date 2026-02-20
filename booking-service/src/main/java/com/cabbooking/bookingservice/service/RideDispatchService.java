@@ -27,8 +27,6 @@ public class RideDispatchService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-
-    
     @Autowired
     private BookingRepository bookingRepository;
 
@@ -40,7 +38,7 @@ public class RideDispatchService {
 
     // Maps bookingId -> Queue of Driver IDs to try
     private final Map<Long, Queue<Cab>> bookingDriverQueue = new ConcurrentHashMap<>();
-    
+
     // Maps bookingId -> Current Driver ID being waiting on
     private final Map<Long, Long> currentDriverPending = new ConcurrentHashMap<>();
 
@@ -56,27 +54,46 @@ public class RideDispatchService {
      * 3. Trigger the first dispatch.
      */
     public void startDispatch(Booking booking) {
-        // Fetch available drivers from cab-service
-        // Ideally filter by radius and type. keeping it simple for now (all available)
-        // You might want to add a query param for radius or filters in the future.
-        String url = cabServiceUrl + "/api/cabs/nearby?latitude=" + booking.getPickupLocation().getLatitude() 
-                   + "&longitude=" + booking.getPickupLocation().getLongitude() + "&radiusKm=50000.0"; 
-        
         try {
-            // We use an array because List<Cab> with generics is tricky with RestTemplate
-            Cab[] availableCabs = restTemplate.getForObject(url, Cab[].class);
-            
-            if (availableCabs == null || availableCabs.length == 0) {
-                notifyUserNoDrivers(booking.getUserId(), booking.getId());
-                return;
+            Queue<Cab> drivers = new ConcurrentLinkedQueue<>();
+
+            System.out.println("====== DISPATCH START ======");
+            System.out.println("Requested Booking Cab ID: " + booking.getCabId());
+
+            if (booking.getCabId() != null) {
+                // Dispatch only to the specifically requested cab
+                String url = cabServiceUrl + "/api/cabs/" + booking.getCabId();
+                Cab requestedCab = restTemplate.getForObject(url, Cab.class);
+
+                System.out.println("Fetched Specific Cab: " + (requestedCab != null ? requestedCab.getId() : "NULL"));
+
+                // Allow dispatching if the cab exists. In real apps, you'd check if it's
+                // AVAILABLE
+                if (requestedCab != null) {
+                    drivers.add(requestedCab);
+                } else {
+                    notifyUserNoDrivers(booking.getUserId(), booking.getId());
+                    return;
+                }
+            } else {
+                // Original fallback logic to iterate through all nearby cabs
+                String url = cabServiceUrl + "/api/cabs/nearby?latitude=" + booking.getPickupLocation().getLatitude()
+                        + "&longitude=" + booking.getPickupLocation().getLongitude() + "&radiusKm=50000.0";
+
+                Cab[] availableCabs = restTemplate.getForObject(url, Cab[].class);
+
+                if (availableCabs == null || availableCabs.length == 0) {
+                    notifyUserNoDrivers(booking.getUserId(), booking.getId());
+                    return;
+                }
+
+                for (Cab cab : availableCabs) {
+                    drivers.add(cab);
+                }
             }
 
-            Queue<Cab> drivers = new ConcurrentLinkedQueue<>();
-            for (Cab cab : availableCabs) {
-                drivers.add(cab);
-            }
             bookingDriverQueue.put(booking.getId(), drivers);
-            
+
             // Start attempting drivers
             attemptNextDriver(booking.getId());
 
@@ -110,19 +127,18 @@ public class RideDispatchService {
 
         // Notify Driver via WebSocket
         RideRequestDTO requestDTO = new RideRequestDTO(
-            booking.getId(),
-            booking.getPickupLocation().getLatitude(),
-            booking.getPickupLocation().getLongitude(),
-            booking.getDropLocation().getLatitude(),
-            booking.getDropLocation().getLongitude(),
-            booking.getUserId(),
-            booking.getDistance(),
-            booking.getFare(),
-            booking.getPickupLocation().getAddress(),
-            booking.getDropLocation().getAddress()
-        );
+                booking.getId(),
+                booking.getPickupLocation().getLatitude(),
+                booking.getPickupLocation().getLongitude(),
+                booking.getDropLocation().getLatitude(),
+                booking.getDropLocation().getLongitude(),
+                booking.getUserId(),
+                booking.getDistance(),
+                booking.getFare(),
+                booking.getPickupLocation().getAddress(),
+                booking.getDropLocation().getAddress());
         // Add fare/distance if DTO supports it or extra fields map
-        
+
         messagingTemplate.convertAndSend("/topic/driver/" + nextDriver.getId() + "/ride-request", requestDTO);
         System.out.println(">>> Dispatching booking " + bookingId + " to driver " + nextDriver.getId());
 
@@ -166,12 +182,12 @@ public class RideDispatchService {
     public void processDriverAcceptance(Long bookingId, Long driverId) {
         cancelTimeoutTask(bookingId);
         cleanup(bookingId);
-        
+
         // The actual booking update is handled by BookingService.acceptRideByDriver
         // We just ensure the dispatch loop stops.
         System.out.println("### Driver " + driverId + " ACCEPTED booking " + bookingId + ". Dispatch loop ended.");
     }
-    
+
     private void cancelTimeoutTask(Long bookingId) {
         ScheduledFuture<?> task = dispatchTasks.get(bookingId);
         if (task != null) {
@@ -187,26 +203,23 @@ public class RideDispatchService {
     }
 
     private void notifyUserNoDrivers(Long userId, Long bookingId) {
-        messagingTemplate.convertAndSend("/topic/user/" + userId + "/error", 
-            Map.of(
-                "status", "NO_DRIVERS",
-                "message", "No drivers accepted your request at this time.",
-                "bookingId", bookingId
-            )
-        );
+        messagingTemplate.convertAndSend("/topic/user/" + userId + "/error",
+                Map.of(
+                        "status", "NO_DRIVERS",
+                        "message", "No drivers accepted your request at this time.",
+                        "bookingId", bookingId));
     }
 
     private void notifyUserError(Long userId, String message) {
-        messagingTemplate.convertAndSend("/topic/user/" + userId + "/error", 
-            Map.of(
-                "status", "ERROR",
-                "message", message
-            )
-        );
+        messagingTemplate.convertAndSend("/topic/user/" + userId + "/error",
+                Map.of(
+                        "status", "ERROR",
+                        "message", message));
     }
-    
+
     public RideRequestDTO getPendingInviteForDriver(Long driverId) {
-        // Iterate through active dispatches to see if this driver is currently being requested
+        // Iterate through active dispatches to see if this driver is currently being
+        // requested
         for (Map.Entry<Long, Long> entry : currentDriverPending.entrySet()) {
             if (entry.getValue().equals(driverId)) {
                 Long bookingId = entry.getKey();
@@ -214,18 +227,17 @@ public class RideDispatchService {
                 // In a real app, you might cache the DTO or fetch from DB
                 Booking booking = bookingRepository.findById(bookingId).orElse(null);
                 if (booking != null) {
-                     return new RideRequestDTO(
-                        booking.getId(),
-                        booking.getPickupLocation().getLatitude(),
-                        booking.getPickupLocation().getLongitude(),
-                        booking.getDropLocation().getLatitude(),
-                        booking.getDropLocation().getLongitude(),
-                        booking.getUserId(),
-                        booking.getDistance(),
-                        booking.getFare(),
-                        booking.getPickupLocation().getAddress(),
-                        booking.getDropLocation().getAddress()
-                    );
+                    return new RideRequestDTO(
+                            booking.getId(),
+                            booking.getPickupLocation().getLatitude(),
+                            booking.getPickupLocation().getLongitude(),
+                            booking.getDropLocation().getLatitude(),
+                            booking.getDropLocation().getLongitude(),
+                            booking.getUserId(),
+                            booking.getDistance(),
+                            booking.getFare(),
+                            booking.getPickupLocation().getAddress(),
+                            booking.getDropLocation().getAddress());
                 }
             }
         }
