@@ -9,43 +9,28 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
   const [acceptedRide, setAcceptedRide] = useState(null);
   const [driverStatus, setDriverStatus] = useState('online'); // online, offline, busy
   const [rideHistory, setRideHistory] = useState([]);
-  const [earnings, setEarnings] = useState(2450);
-  const [completedRides, setCompletedRides] = useState(256);
-  const [rating, setRating] = useState(4.8);
+  const [earnings, setEarnings] = useState(0);
+  const [completedRides, setCompletedRides] = useState(0);
+  const [rating, setRating] = useState(0.0);
 
   console.log("🎨 DriverDashboard Render. Requests:", incomingRequests.length, "Accepted:", acceptedRide ? "Yes" : "No");
 
   // WebSocket Hook
   const { rideRequest, sendDriverConfirmation, sendMessageToUser, clearRideRequest } = useRideWebSocket(null, cab?.id);
 
-  // Mock rides for history
-  const mockRideHistory = [
-    {
-      id: 'RIDE001',
-      passengerName: 'Rajesh Kumar',
-      pickupLocation: 'MG Road, Bangalore',
-      dropLocation: 'Koramangala, Bangalore',
-      fare: 245,
-      distance: 8.5,
-      time: '45 mins',
-      rating: 5,
-      date: '2025-02-10 10:30 AM'
-    },
-    // ... keep other history if needed
-  ];
+  // History is pulled from localStorage initially
 
   // Initialize history
   useEffect(() => {
     // Load from localStorage if available
-    const savedHistory = localStorage.getItem('driverRideHistory');
-    const savedEarnings = localStorage.getItem('driverEarnings');
-    const savedCompletedRides = localStorage.getItem('driverCompletedRides');
-    const savedRating = localStorage.getItem('driverRating');
+    const cabId = cab?.id || 'unknown';
+    const savedHistory = localStorage.getItem(`driverRideHistory_${cabId}`);
+    const savedEarnings = localStorage.getItem(`driverEarnings_${cabId}`);
+    const savedCompletedRides = localStorage.getItem(`driverCompletedRides_${cabId}`);
+    const savedRating = localStorage.getItem(`driverRating_${cabId}`);
 
     if (savedHistory) {
       setRideHistory(JSON.parse(savedHistory));
-    } else {
-      setRideHistory(mockRideHistory);
     }
 
     if (savedEarnings) setEarnings(parseInt(savedEarnings));
@@ -94,7 +79,7 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
 
     // Only fetch pending requests once per online session
     let isMounted = true;
-    
+
     fetch(`http://localhost:8077/api/bookings/dispatch/pending/driver/${cab.id}`)
       .then(res => {
         if (res.ok && res.status !== 204) return res.json();
@@ -102,7 +87,7 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
       })
       .then(data => {
         if (!isMounted) return;
-        
+
         if (data) {
           console.log("📥 Found pending request on load:", data);
           const newRequest = {
@@ -234,10 +219,11 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
         setEarnings(updatedEarnings);
         setCompletedRides(updatedRides);
 
-        localStorage.setItem('driverRideHistory', JSON.stringify(updatedHistory));
-        localStorage.setItem('driverEarnings', String(updatedEarnings));
-        localStorage.setItem('driverCompletedRides', String(updatedRides));
-        localStorage.setItem('driverRating', String(rating));
+        const cabId = cab?.id || 'unknown';
+        localStorage.setItem(`driverRideHistory_${cabId}`, JSON.stringify(updatedHistory));
+        localStorage.setItem(`driverEarnings_${cabId}`, String(updatedEarnings));
+        localStorage.setItem(`driverCompletedRides_${cabId}`, String(updatedRides));
+        localStorage.setItem(`driverRating_${cabId}`, String(rating));
 
         localStorage.removeItem('activeRide');
         localStorage.removeItem('acceptedRide');
@@ -328,7 +314,7 @@ const DriverDashboardSimple = ({ cab, onLogout }) => {
           <div className="stat-icon">💰</div>
           <div className="stat-content">
             <div className="stat-label">Earnings</div>
-            <div className="stat-value">₹{earnings}</div>
+            <div className="stat-value">₹{earnings.toFixed(2)}</div>
           </div>
         </div>
       </div>

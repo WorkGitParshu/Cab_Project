@@ -272,6 +272,9 @@ export default function UserRidePage({ user, pickupLocation, dropLocation, setCu
     </div>
   );
 
+  // If the ride is COMPLETED, explicitly hide the tracker and driverLoc
+  const hideTracker = bookingStatus === 'completed';
+
   if (bookingStatus === "awaiting") {
     return (
       <div className="user-ride-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '60vh' }}>
@@ -297,9 +300,9 @@ export default function UserRidePage({ user, pickupLocation, dropLocation, setCu
         />
       )}
 
-      {bookingStatus === "assigned" && renderMap(true)}
+      {bookingStatus === "assigned" && !hideTracker && renderMap(true)}
 
-      {bookingStatus === 'assigned' && assignedCab && (
+      {bookingStatus === 'assigned' && assignedCab && !hideTracker && (
         <div className="ride-info-panel">
           <div className="ride-status-header">
             <div className="status-icon">🚗</div>
@@ -323,7 +326,7 @@ export default function UserRidePage({ user, pickupLocation, dropLocation, setCu
               <span className="info-label">Live Location</span>
               <span className="info-value text-sm flex items-center gap-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                {driverLoc ? `${driverLoc.lat.toFixed(4)}, ${driverLoc.lng.toFixed(4)}` : "Fetching location..."}
+                {hideTracker ? "Hidden" : (driverLoc ? `${driverLoc.lat.toFixed(4)}, ${driverLoc.lng.toFixed(4)}` : "Fetching location...")}
               </span>
             </div>
           </div>
