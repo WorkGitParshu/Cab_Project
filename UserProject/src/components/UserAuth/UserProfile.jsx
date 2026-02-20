@@ -89,24 +89,24 @@ export default function UserProfile({ user }) {
           : (profile.address || <em>—</em>)}
         </div>
         <div><b>Role:</b> <span>{profile.role || <em>—</em>}</span></div>
-        <div><b>Status:</b> {profile.active ? <span style={{color:'#07a463'}}>Active</span> : <span style={{color:'#a50b0b'}}>Inactive</span>}</div>
+        <div><b>Status:</b> {profile.active !== false ? <span style={{ color: '#07a463' }}>Active</span> : <span style={{ color: '#a50b0b' }}>Inactive</span>}</div>
       </div>
-      <div style={{marginTop:30}}>
+      <div style={{ marginTop: 30 }}>
         {!editMode ? (
           <button className="edit-profile-btn" onClick={() => setEditMode(true)}>
             ✏️ Edit Profile
           </button>
         ) : (
           <>
-            <button className="edit-profile-btn" style={{background:'#34934d'}} onClick={handleSave}>
+            <button className="edit-profile-btn" style={{ background: '#34934d' }} onClick={handleSave}>
               💾 Save
             </button>
-            <button className="edit-profile-btn" style={{background:'#9e9e9e'}} onClick={() => {setEditMode(false);setProfile(user);}}>
+            <button className="edit-profile-btn" style={{ background: '#9e9e9e' }} onClick={() => { setEditMode(false); setProfile(user); }}>
               Cancel
             </button>
           </>
         )}
-        {savedMsg && <div style={{marginTop:10, color:"#248dfd",fontWeight:600}}>{savedMsg}</div>}
+        {savedMsg && <div style={{ marginTop: 10, color: "#248dfd", fontWeight: 600 }}>{savedMsg}</div>}
       </div>
     </div>
   );

@@ -3,8 +3,12 @@ import './DriverDashboardSimple.css';
 
 import { useRideWebSocket } from '../../hooks/useRideWebSocket';
 
-const DriverDashboardSimple = ({ cab, onLogout }) => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+const DriverDashboardSimple = ({ cab, onLogout, defaultTab = 'dashboard' }) => {
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [acceptedRide, setAcceptedRide] = useState(null);
   const [driverStatus, setDriverStatus] = useState('online'); // online, offline, busy

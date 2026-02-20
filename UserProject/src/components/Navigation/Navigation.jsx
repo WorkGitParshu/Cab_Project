@@ -88,8 +88,14 @@ const Navigation = ({
         <>
           <div className="nav-section">
             <h4 className="nav-section-title">Driver Panel</h4>
-            <NavItem page="home" icon="🏠" label="Home" />
-            {cab && <NavItem page="cab-dashboard" icon="🎛️" label="Dashboard" />}
+            {cab ? (
+              <>
+                <NavItem page="cab-dashboard" icon="🎛️" label="Dashboard" />
+                <NavItem page="cab-history" icon="📜" label="History" />
+              </>
+            ) : (
+              <NavItem page="home" icon="🏠" label="Home" />
+            )}
           </div>
 
           <div className="nav-section mt-auto">
@@ -130,8 +136,8 @@ const Navigation = ({
           </div>
           <div className="header-actions">
             <NotificationBell />
-            <button 
-              className="theme-toggle-btn" 
+            <button
+              className="theme-toggle-btn"
               onClick={onToggleTheme}
               title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             >
@@ -161,11 +167,16 @@ const Navigation = ({
         )}
         {userRole === 'driver' && (
           <>
-            <NavItem page="home" icon="🏠" label="Home" />
             {cab ? (
-              <NavItem page="cab-dashboard" icon="🎛️" label="Dash" />
+              <>
+                <NavItem page="cab-dashboard" icon="🎛️" label="Dash" />
+                <NavItem page="cab-history" icon="📜" label="History" />
+              </>
             ) : (
-              <NavItem page="cab-login" icon="🔑" label="Login" />
+              <>
+                <NavItem page="home" icon="🏠" label="Home" />
+                <NavItem page="cab-login" icon="🔑" label="Login" />
+              </>
             )}
           </>
         )}

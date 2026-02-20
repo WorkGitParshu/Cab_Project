@@ -18,17 +18,19 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final KafkaProducerService kafkaProducerService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private KafkaProducerService kafkaProducerService;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            JwtTokenProvider jwtTokenProvider, KafkaProducerService kafkaProducerService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.kafkaProducerService = kafkaProducerService;
+    }
 
     public User registerUser(UserRegistrationRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {

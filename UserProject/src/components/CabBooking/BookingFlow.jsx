@@ -353,7 +353,11 @@ const BookingFlow = ({
               <p>Arriving in <strong>{selectedDriver.responseTime}</strong></p>
               <div className="mt-2 text-sm text-green-400">Your ride is confirmed</div>
             </div>
-            <button className="btn btn-danger w-full mt-4" onClick={() => { setBookingStep(1); showToast("Ride Cancelled", "info"); }}>Cancel Ride</button>
+            <button className="btn btn-danger w-full mt-4" onClick={() => {
+              localStorage.removeItem('currentUserRide');
+              setBookingStep(1);
+              showToast("Ride Cancelled", "info");
+            }}>Cancel Ride</button>
           </div>
         )}
       </div>

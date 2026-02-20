@@ -284,6 +284,16 @@ export default function UserRidePage({ user, pickupLocation, dropLocation, setCu
           <div className="pulse-loader margin-auto mb-4" style={{ margin: '0 auto 2rem auto', width: '80px', height: '80px' }}></div>
           <h2 style={{ color: "white", marginBottom: "15px", fontSize: '2rem' }}>Finding your driver...</h2>
           <p className="text-muted" style={{ fontSize: '1.1rem' }}>Please wait while we connect you to the nearest available driver.</p>
+          <button
+            className="btn btn-secondary mt-4"
+            style={{ padding: '10px 30px' }}
+            onClick={() => {
+              localStorage.removeItem('currentUserRide');
+              if (setCurrentPage) setCurrentPage('book-ride');
+            }}
+          >
+            Cancel Request
+          </button>
         </div>
       </div>
     );

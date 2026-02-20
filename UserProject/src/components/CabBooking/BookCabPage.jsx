@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCabAssignmentAndTracking } from "../../hooks/useCabAssignmentAndTracking";
 import MapWithCabs from "./MapWithCabs";
 import BookingFlow from "./BookingFlow";
@@ -14,6 +14,29 @@ export default function BookCabPage({
   setDropLocation
 }) {
   const [assignedCab, setAssignedCab] = useState(null);
+
+  // Auto-redirect if an active ride exists in local storage
+  useEffect(() => {
+    const savedRide = localStorage.getItem('currentUserRide');
+    if (savedRide) {
+      try {
+        const ride = JSON.parse(savedRide);
+        if (ride && (!ride.status || ride.status === 'PENDING' || ride.status === 'ASSIGNED' || ride.status === 'CONFIRMED' || ride.status === 'ACCEPTED')) {
+          // If the ride is older than 5 minutes and stuck without a status, ignore it
+          const rideTime = new Date(ride.requestTime || ride.createdAt || Date.now()).getTime();
+          const now = Date.now();
+          if (now - rideTime < 5 * 60 * 1000) {
+            setCurrentPage('user-ride');
+          } else {
+            localStorage.removeItem('currentUserRide');
+          }
+        }
+      } catch (e) {
+        console.error("Failed to parse saved ride on BookCabPage load", e);
+      }
+    }
+  }, [setCurrentPage]);
+
   const { driverLoc } = useCabAssignmentAndTracking(user?.id);
 
   // This function is passed to BookingFlow to update the parent state/map

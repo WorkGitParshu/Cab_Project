@@ -24,6 +24,7 @@ import QuickAccess from './components/QuickAccess/QuickAccess';
 import NotificationToast from './components/Notifications/NotificationToast';
 import ProtectedPage from './Routing/ProtectedPage';
 import DriverProtected from './Routing/DriverProtected';
+import Toast from './components/Common/Toast';
 
 function App() {
   const [userRole, setUserRole] = useState(null); // 'passenger' or 'driver'
@@ -35,6 +36,17 @@ function App() {
   const [dropLocation, setDropLocation] = useState(null);
   const [_driverData, _setDriverData] = useState(null);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [toastMessage, setToastMessage] = useState(null);
+  const [toastType, setToastType] = useState('info');
+
+  const showToast = (message, type = 'info') => {
+    setToastMessage(message);
+    setToastType(type);
+  };
+
+  const handleCloseToast = () => {
+    setToastMessage(null);
+  };
 
 
   useEffect(() => {
@@ -81,6 +93,7 @@ function App() {
   const handleLogin = (userData) => {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    showToast('Signed in successfully!', 'success');
     setCurrentPage('home');
   };
 
@@ -95,6 +108,7 @@ function App() {
     setUserRole(null);
     localStorage.removeItem('userRole');
     localStorage.removeItem('user'); // Ensure user data is cleared
+    showToast('Signed out successfully!', 'success');
     setCurrentPage('home');
     setSelectedBooking(null);
   };
@@ -115,6 +129,7 @@ function App() {
     setUserRole(null);
     localStorage.removeItem('userRole');
     localStorage.removeItem('cab');
+    showToast('Driver signed out successfully!', 'success');
     setCurrentPage('home');
   };
 
@@ -152,10 +167,11 @@ function App() {
       case 'home':
         if (userRole === 'driver') {
           if (!cab) {
-            return <CabLogin onLogin={(cabData) => { 
+            return <CabLogin onLogin={(cabData) => {
               setCab(cabData);
               localStorage.setItem('cab', JSON.stringify(cabData));
-              setCurrentPage('driver-dashboard'); 
+              showToast('Driver signed in successfully!', 'success');
+              setCurrentPage('driver-dashboard');
             }} />;
           }
           return <DriverDashboardSimple cab={cab} onLogout={handleCabLogout} />;
@@ -204,20 +220,25 @@ function App() {
           <Payment booking={selectedBooking} onPaymentComplete={handlePaymentComplete} />
         </ProtectedPage>;
       case 'cab-register':
-        return <CabRegister onRegister={(cabData) => { 
+        return <CabRegister onRegister={(cabData) => {
           setCab(cabData);
           localStorage.setItem('cab', JSON.stringify(cabData));
-          setCurrentPage('driver-dashboard'); 
+          setCurrentPage('driver-dashboard');
         }} />;
       case 'cab-login':
-        return <CabLogin onLogin={(cabData) => { 
+        return <CabLogin onLogin={(cabData) => {
           setCab(cabData);
           localStorage.setItem('cab', JSON.stringify(cabData));
-          setCurrentPage('driver-dashboard'); 
+          showToast('Driver signed in successfully!', 'success');
+          setCurrentPage('driver-dashboard');
         }} />;
       case 'cab-dashboard':
         return <DriverProtected cab={cab} onNavigate={setCurrentPage}>
           <DriverDashboardSimple cab={cab} onLogout={handleCabLogout} />
+        </DriverProtected>;
+      case 'cab-history':
+        return <DriverProtected cab={cab} onNavigate={setCurrentPage}>
+          <DriverDashboardSimple cab={cab} onLogout={handleCabLogout} defaultTab="history" />
         </DriverProtected>;
       case 'booking-flow':
         return <ProtectedPage user={user} onNavigate={setCurrentPage}>
@@ -270,6 +291,14 @@ function App() {
     >
       {renderCurrentPage()}
       <NotificationToast />
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={handleCloseToast}
+          duration={3000}
+        />
+      )}
     </MainLayout>
   );
 }

@@ -18,23 +18,27 @@ import org.springframework.http.HttpStatus;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
-    
+
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
-    
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
         User user = userService.registerUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest request) {
         Optional<User> user = userService.authenticateUser(request);
         if (user.isPresent()) {
             User authenticatedUser = user.get();
             String token = userService.generateToken(authenticatedUser.getEmail());
-            
+
             LoginResponse response = new LoginResponse(
                     token,
                     authenticatedUser.getId(),
@@ -43,42 +47,42 @@ public class UserController {
                     authenticatedUser.getLastName(),
                     authenticatedUser.getPhoneNumber(),
                     authenticatedUser.getAddress(),
-                    authenticatedUser.getRole()
-            );
+                    authenticatedUser.getRole(),
+                    authenticatedUser.isActive());
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-    
+
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         Optional<User> user = userService.getUserById(id);
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    
+
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         Optional<User> user = userService.getUserByEmail(email);
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         User updatedUser = userService.updateUser(id, userDetails);
         return ResponseEntity.ok(updatedUser);
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
-} 
+}
